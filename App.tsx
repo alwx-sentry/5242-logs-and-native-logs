@@ -11,11 +11,12 @@ import * as Sentry from '@sentry/react-native';
 import ImageBrowserApp from './ImageBrowserApp';
 
 Sentry.init({
-  dsn: '',
+  dsn: 'INSERT_DSN_HERE',
   replaysSessionSampleRate: 1.0,
   replaysOnErrorSampleRate: 1.0,
   integrations: [
-    Sentry.mobileReplayIntegration()
+    Sentry.mobileReplayIntegration(),
+    Sentry.consoleLoggingIntegration({ levels: ["log", "warn", "error"] })
   ],
   enableLogs: true,
 });
@@ -30,7 +31,11 @@ function App(props: AppProps) {
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <ImageBrowserApp images={props.images} />
       <Button title='Try!' onPress={() => {
-        Sentry.logger.warn("SENTRY DEMO: Try button pressed");
+        console.warn('SENTRY DEMO: Console: Try button pressed');
+        Sentry.logger.info("SENTRY DEMO: Try button pressed");
+      }} />
+      <Button title='Throw error' onPress={() => {
+        throw new Error('SENTRY DEMO: unhandled error')
       }} />
     </View>
   );
